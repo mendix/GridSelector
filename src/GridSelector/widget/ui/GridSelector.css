@@ -1,0 +1,12 @@
+.gridSelector.mx-datagrid input {
+    height:initial;
+    margin: 1px; 
+}
+
+.gridSelector input[type="radio"]:not([disabled]), .gridSelector input[type="checkbox"]:not([disabled]){
+    cursor: pointer; 
+}
+
+.gridSelector tr {
+    cursor: default;
+}

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget id="GridSelector.widget.CheckboxGrid" needsEntityContext="false" xmlns="http://www.mendix.com/widget/1.0/">
+  <name>Checkbox grid selector</name>
+  <description>Checkbox grid selector.</description>
+
+  <icon>
+	iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2Fy
+	ZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAZ1JREFUeNqUUjtrwlAU/mLio0MpiKMW
+	NJNDRwX3DpKxdPXH9JcIumay0KlDhUKXQmmHUJcORbIoxKLxlZj0nNurvVpa7YHv
+	no97z/seLY5j/CatVivO5XLYtTEMA6vVCr1eDwb+kEqlgnK5/OM+DEMRxPM8P0EC
+	whXBVnFB97PZbMuJhbPato3pdMpVRAn5fka4lOC7S5MOXdcxHA7hOI7I2O/30W63
+	4bouJ/1qRwZIKBUKHspe2bjT6cD3fXS7XWFgWRbS6bSYzdpRJ1xLOKxf6QiCAPl8
+	Xhg3m00sl0s0Gg2YpineoijaVMABLMlvmHvVKubzObLZLOr1usheq9VQLBYxmUyQ
+	SqVEBWoAqJz75RZYSqUSCoWCcFr/QCaTgaZpWwFuJX9hPhgMzmniwXg8xmKxEEPj
+	jOudSCaTGI1GuohCuJN6i7MTZ2NjkY04g3+HtTpEdaE2nAzueePkDgjOoOEJrhpz
+	Cw+SPx3Av0WW+6i0cDAXvyCHcqzE/BfnFk4JbwRXMdjHn6Xfu0bHCeFoZ533SUSY
+	UfUfnwIMAKpBwiDZ09+qAAAAAElFTkSuQmCC
+  </icon>
+
+  <properties>
+		<property key="leftEntity" type="entity" required="true">
+			<caption>Left entity</caption>
+			<category>Left data source</category>
+			<description>The left entity.</description>
+		</property>
+		<property key="leftConstraint" type="entityConstraint" entityProperty="leftEntity" required="false">
+          <caption>Left constraint</caption>
+          <category>Left data source</category>
+          <description>The constraint for the left entity set.</description>
+        </property>
+		<property key="leftDisplayAttr" type="attribute" entityProperty="leftEntity">
+		  <caption>Left display attribute</caption>
+		  <category>Left data source</category>
+		  <description>The attribute to show as the name.</description> 
+		  <attributeTypes>
+			  <attributeType name="String"/>
+			  <attributeType name="Integer"/>
+			  <attributeType name="DateTime"/>
+		  </attributeTypes>
+		</property>
+		<property key="leftSortAttr" type="attribute" entityProperty="leftEntity">
+		  <caption>Left sort attribute</caption>
+		  <category>Left data source</category>
+		  <description>This fields provides the sort attribute of the list.</description> 
+		  <attributeTypes>
+			  <attributeType name="String"/>
+			  <attributeType name="Integer"/>
+			  <attributeType name="DateTime"/>
+		  </attributeTypes>
+		</property>
+		<property key="leftSortOrder" type="enumeration" defaultValue="Asc">
+		  <caption>Left sort order</caption>
+		  <category>Left data source</category>
+		  <description>The sort order.</description>
+		  <enumerationValues>
+			  <enumerationValue key="Asc">Ascending</enumerationValue>
+			  <enumerationValue key="Desc">Descending</enumerationValue>
+		  </enumerationValues>
+		</property>
+		<property key="leftWidth" type="integer" defaultValue="0">
+		  <caption>Width in percentage</caption>
+		  <category>Left data source</category>
+		  <description>The width of the first left row showing the objects. Use 0 for automatically sized.</description>
+		</property>
+		<property key="topEntity" type="entity" required="true" isPath="yes" pathType="referenceSet" entityProperty="leftEntity">
+			<caption>Top entity</caption>
+			<category>Top data source</category>
+			<description>The association that is to be set.</description>
+		</property>
+		<property key="topConstraint" type="entityConstraint" entityProperty="topEntity" required="false">
+          <caption>Top constraint</caption>
+          <category>Top data source</category>
+          <description>The constraint for the top entity set.</description>
+        </property>
+		<property key="topDisplayAttr" type="attribute" entityProperty="topEntity">
+		  <caption>Top display attribute</caption>
+		  <category>Top data source</category>
+		  <description>The attribute to show as the name.</description> 
+		  <attributeTypes>
+			  <attributeType name="String"/>
+			  <attributeType name="Integer"/>
+			  <attributeType name="DateTime"/>
+		  </attributeTypes>
+		</property>
+		<property key="topSortAttr" type="attribute" entityProperty="topEntity">
+		  <caption>Top sort attribute</caption>
+		  <category>Top data source</category>
+		  <description>This fields provides the sort attribute of the list.</description> 
+		  <attributeTypes>
+			  <attributeType name="String"/>
+			  <attributeType name="Integer"/>
+			  <attributeType name="DateTime"/>
+		  </attributeTypes>
+		</property>
+		<property key="topSortOrder" type="enumeration" defaultValue="Asc">
+		  <caption>Top sort order</caption>
+		  <category>Top data source</category>
+		  <description>The sort order.</description>
+		  <enumerationValues>
+			  <enumerationValue key="Asc">Ascending</enumerationValue>
+			  <enumerationValue key="Desc">Descending</enumerationValue>
+		  </enumerationValues>
+		</property>
+		<property key="onchangemf" type="microflow" required="false" entityProperty="leftEntity">
+            <caption>Onchange microflow</caption>
+            <category>Behavior</category>
+            <description></description> 
+            <returnType type="Void"/>
+        </property>
+		<property key="pageLimit" type="integer" defaultValue="10">
+			<caption>Items per page</caption>
+			<category>Behavior</category>
+			<description>Items per page.</description>
+		</property>
+		<property key="readonly" type="boolean" defaultValue="false">
+			<caption>Read-only</caption>
+			<category>Behavior</category>
+			<description>Read-only.</description>
+		</property>
+	</properties>
+</widget>

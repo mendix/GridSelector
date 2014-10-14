@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget id="GridSelector.widget.RadioGrid" needsEntityContext="false" xmlns="http://www.mendix.com/widget/1.0/">
+  <name>Radio grid selector</name>
+  <description>Radio grid selector.</description>
+
+  <icon>
+	iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2Fy
+	ZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAgpJREFUeNqUk82LEnEYx58Zx5dRREnB
+	g5CiKEJkdpECD4HZwVjCPXgQOm3nvXTw7F/QJei0d2EhDxt6aA8bBjuHZMnIUFE0
+	KEEXxTd8wZeeZ/oJv6LY3R985/dhZp7v8zK/EbbbLfxrZTIZEAQBFouFfb1e3/P5
+	fMeiKOrb7fbL2Wz2wWQyfaNYCf6zKHg+n9s8Hs9JIBB4EIlE1PvlcvlNrVbrl0ql
+	p7IsKxK6qglRd3iDdDp94HA43qdSqftGo5HMYLPZQDAYJN1CfocmD3cV3EXtM35L
+	rNVqn3m9XjW41WpBNpsFLB3i8TiEw2Hw+/22SqXyRGRBIpdcZbvdfhSLxdSshUIB
+	hsOh2lY+n4fRaAShUAhcLtfrXQUa1AnjL8Sr1epyPB7brFYrGAwGwEHCcrkEs9kM
+	NDxqCd8ZiJzBHlOI9l6vt0/ZKCuVjYMEp9MJiUQCLBYLKIoCzWYzxVcAPEuS9KPT
+	6Rw1Go0Dt9sNyWTy90ONBrrdLlSrVQX5K29wyrhMjEN8PJlMXuRyuTV+jefRaFSm
+	VorF4gqHetHv9/f0ev3lzoD2R4zPiKlPnU4H0+n0sF6vv8KAHH5yw2AwOMTezylY
+	PYTUI+oj22/E/EmkFs4ZX1yD/zyyqE+c+7VZrYD9TGbO80ZMLdxGNVE/uReu4s8s
+	7ruAFwtK/us4X7U2qBlWP/wlwAAmG+BhF0Cq4QAAAABJRU5ErkJggg==
+  </icon>
+
+  <properties>
+		<property key="leftEntity" type="entity" required="true">
+			<caption>Left entity</caption>
+			<category>Left data source</category>
+			<description>The left entity.</description>
+		</property>
+		<property key="leftConstraint" type="entityConstraint" entityProperty="leftEntity" required="false">
+          <caption>Left constraint</caption>
+          <category>Left data source</category>
+          <description>The constraint for the left entity set.</description>
+        </property>
+		<property key="leftDisplayAttr" type="attribute" entityProperty="leftEntity">
+		  <caption>Left display attribute</caption>
+		  <category>Left data source</category>
+		  <description>The attribute to show as the name.</description> 
+		  <attributeTypes>
+			  <attributeType name="String"/>
+			  <attributeType name="Integer"/>
+			  <attributeType name="DateTime"/>
+		  </attributeTypes>
+		</property>
+		<property key="leftSortAttr" type="attribute" entityProperty="leftEntity">
+		  <caption>Left sort attribute</caption>
+		  <category>Left data source</category>
+		  <description>This fields provides the sort attribute of the list.</description> 
+		  <attributeTypes>
+			  <attributeType name="String"/>
+			  <attributeType name="Integer"/>
+			  <attributeType name="DateTime"/>
+		  </attributeTypes>
+		</property>
+		<property key="leftSortOrder" type="enumeration" defaultValue="Asc">
+		  <caption>Left sort order</caption>
+		  <category>Left data source</category>
+		  <description>The sort order.</description>
+		  <enumerationValues>
+			  <enumerationValue key="Asc">Ascending</enumerationValue>
+			  <enumerationValue key="Desc">Descending</enumerationValue>
+		  </enumerationValues>
+		</property>
+		<property key="leftWidth" type="integer" defaultValue="0">
+		  <caption>Width in percentage</caption>
+		  <category>Left data source</category>
+		  <description>The width of the first left row showing the objects. Use 0 for automatically sized.</description>
+		</property>
+		<property key="topEntity" type="entity" required="true" isPath="yes" pathType="reference" entityProperty="leftEntity">
+			<caption>Top entity</caption>
+			<category>Top data source</category>
+			<description>The association that is to be set.</description>
+		</property>
+		<property key="topConstraint" type="entityConstraint" entityProperty="topEntity" required="false">
+          <caption>Top constraint</caption>
+          <category>Top data source</category>
+          <description>The constraint for the top entity set.</description>
+        </property>
+		<property key="topDisplayAttr" type="attribute" entityProperty="topEntity">
+		  <caption>Top display attribute</caption>
+		  <category>Top data source</category>
+		  <description>The attribute to show as the name.</description> 
+		  <attributeTypes>
+			  <attributeType name="String"/>
+			  <attributeType name="Integer"/>
+			  <attributeType name="DateTime"/>
+		  </attributeTypes>
+		</property>
+		<property key="topSortAttr" type="attribute" entityProperty="topEntity">
+		  <caption>Top sort attribute</caption>
+		  <category>Top data source</category>
+		  <description>This fields provides the sort attribute of the list.</description> 
+		  <attributeTypes>
+			  <attributeType name="String"/>
+			  <attributeType name="Integer"/>
+			  <attributeType name="DateTime"/>
+		  </attributeTypes>
+		</property>
+		<property key="topSortOrder" type="enumeration" defaultValue="Asc">
+		  <caption>Top sort order</caption>
+		  <category>Top data source</category>
+		  <description>The sort order.</description>
+		  <enumerationValues>
+			  <enumerationValue key="Asc">Ascending</enumerationValue>
+			  <enumerationValue key="Desc">Descending</enumerationValue>
+		  </enumerationValues>
+		</property>
+		<property key="onchangemf" type="microflow" required="false" entityProperty="leftEntity">
+            <caption>Onchange microflow</caption>
+            <category>Behavior</category>
+            <description></description> 
+            <returnType type="Void"/>
+        </property>
+		<property key="pageLimit" type="integer" defaultValue="10">
+			<caption>Items per page</caption>
+			<category>Behavior</category>
+			<description>Items per page.</description>
+		</property>
+		<property key="readonly" type="boolean" defaultValue="false">
+			<caption>Read-only</caption>
+			<category>Behavior</category>
+			<description>Read-only.</description>
+		</property>
+	</properties>
+</widget>
