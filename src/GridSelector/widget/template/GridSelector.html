@@ -23,14 +23,9 @@
     <div class="${baseClass}-content" dojoAttachPoint="contentNode" focusIndex="2">
         <div class="${subClass}-content-wrapper" dojoAttachPoint="tableWrapper">
             <form>
-                <table class="table table-bordered ${subClass}-head-table" dojoAttachPoint="headTable">
-                    <colgroup dojoAttachPoint="headTableGroupNode"></colgroup>
+                <table class="table table-striped table-bordered ${subClass}-head-table" dojoAttachPoint="gridTable">
                     <thead class="${subClass}-head" dojoAttachPoint="gridHeadNode"></thead>
-                </table>
-                <table class="table table-striped table-bordered ${subClass}-body-table" dojoAttachPoint="gridTable">
-                    <colgroup dojoAttachPoint="bodyTableGroupNode"></colgroup>
                     <tbody class="${subClass}-body" dojoAttachPoint="gridBodyNode"></tbody>
-                    <!--<tfoot class="${subClass}-foot" dojoAttachPoint="gridFootNode"></tfoot>-->
                 </table>
             </form>
         </div>

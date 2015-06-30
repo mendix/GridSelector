@@ -193,7 +193,6 @@ define( [
         },
 
         _renderGrid: function (callback) {
-            debugger;
             this._selected = [];
             this._rows = [];
 
