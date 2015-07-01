@@ -284,9 +284,7 @@ define( [
                     {
                         'class': 'mx-left-aligned'
                     },
-                    mxui.dom.div({
-                        'class': 'mx-datagrid-data-wrapper'
-                    }, this._leftObjs[i].get(this.leftDisplayAttr))
+                    mxui.dom.div(this._leftObjs[i].get(this.leftDisplayAttr))
                 );
 
                 this._rows[i].header = _nodetd;

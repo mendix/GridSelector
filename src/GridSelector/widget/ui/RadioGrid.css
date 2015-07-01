@@ -10,3 +10,7 @@
 .gridSelector tr {
     cursor: default;
 }
+
+.gridSelector td {
+	word-wrap: break-word;
+}
