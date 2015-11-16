@@ -162,7 +162,7 @@ define( [
                     for(i = 0; i< objs.length; i++){
                         mx.data.subscribe({
                             guid     : objs[i].getGuid(),
-                            callback : lang.hitch(this, this._updateTopObjects) 
+                            callback : lang.hitch(this, this._updateTopObjects)
                         });
                     }
                     callback();
@@ -187,7 +187,7 @@ define( [
                     this._renderGrid();
                 }),
                 error: function (err) {
-                    console.error('Eroor updateTopObjects ' + obj + ' : ', err);
+                    console.error('Error updateTopObjects ' + obj + ' : ', err);
                 }
             });
         },
@@ -226,7 +226,7 @@ define( [
                 domAttr.remove(this.pagingNext, 'disabled');
             }
 
-            if (this._maxPages <= 0 ) { 
+            if (this._maxPages <= 0 ) {
                 domStyle.set(this.controlNode, 'display', 'none');
             } else {
                 domStyle.set(this.controlNode, 'display', 'block');
@@ -297,14 +297,14 @@ define( [
 
                     _topID = this.topObjs[j].getGuid();
                     _checked = _leftAssoc !== '' && (_leftAssoc.hasOwnProperty(_topID) || _leftAssoc.guid === _topID || _topID === _leftAssoc);
-                    
+
                     this._rows[i].cells[j] = {};
 
                     _cellnode = mxui.dom.td({
                         'class': 'mx-center-aligned',
                         'tabIndex': (i * this.topObjs.length) + j
                     });
-                    
+
                     this._rows[i].node.appendChild(_cellnode);
 
                     if (this.inputType === 'checkbox') {
@@ -453,9 +453,9 @@ define( [
                         if (this.inputType === 'checkbox') {
                             _refs.push(_cell.top.getGuid());
 
-                            _cell.left.setAttribute(this._assoc[0], _refs);
+                            _cell.left.set(this._assoc[0], _refs);
                         } else {
-                            _cell.left.setAttribute(this._assoc[0], _cell.top.getGuid());
+                            _cell.left.set(this._assoc[0], _cell.top.getGuid());
                         }
                     } else {
                         if (this.inputType === 'checkbox') {
@@ -463,9 +463,9 @@ define( [
                                 return item !== _cell.top.getGuid();
                             });
 
-                            _cell.left.setAttribute(this._assoc[0], _filterrefs);
+                            _cell.left.set(this._assoc[0], _filterrefs);
                         } else {
-                            _cell.left.setAttribute(this._assoc[0], '');
+                            _cell.left.set(this._assoc[0], '');
                         }
                     }
                     this._executeClick(_cell.left);
@@ -518,13 +518,12 @@ define( [
                 _left = this._leftObjs[_idx],
                 _cells = this._rows[_idx].cells,
                 _header = this._rows[_idx].header,
-                i = 0,
-                self = this;    
+                i = 0;
 
             function _setBoxes(_refs, _obj) {
                 for (i = 0; i < _cells.length; i++) {
                     if (_refs instanceof Array) {
-                        if (self._arrIndexOf(_refs, _cells[i].top.getGuid()) > -1) {
+                        if (this._arrIndexOf(_refs, _cells[i].top.getGuid()) > -1) {
                             _cells[i].box.checked = true;
                         } else {
                             _cells[i].box.checked = false;
@@ -539,15 +538,15 @@ define( [
                 }
 
                 // update local cache
-                for(i = 0; i < self._leftObjs.length; i++){
-                    if(self._leftObjs[i].getGuid() === _obj.getGuid()){
-                        self._leftObjs[i] = _obj;
+                for(i = 0; i < this._leftObjs.length; i++){
+                    if(this._leftObjs[i].getGuid() === _obj.getGuid()){
+                        this._leftObjs[i] = _obj;
                         break;
                     }
                 }
 
-                html.set(_header, _obj.get(self.leftDisplayAttr));
-            }
+                html.set(_header, _obj.get(this.leftDisplayAttr));
+            };
 
             if (!this._ignoreChange) {
                 this._getLeftRefs(_left, lang.hitch(this, _setBoxes));
@@ -599,7 +598,7 @@ define( [
                         guids : [_mxobj.getGuid()]
                     },
                     callback: function () {
-                        // ok   
+                        // ok
                     },
                     error: function (err) {
                         console.error('exec click returned error for guid ' + _mxobj.getGuid() + ' MF:' + this.onchangemf + ' : ', err);
