@@ -46,6 +46,7 @@ define( [
         _handle: null,
         _contextObj: null,
         _objProperty: null,
+        contextsub : null,
 
         // dojo.declare.constructor is called to construct the widget instance. Implement to initialize non-primitive properties.
         constructor: function () {
@@ -88,12 +89,9 @@ define( [
             }
         },
 
-        update: function (obj, callback) {
+        update: function (obj, cb) {
             if (obj) {
-                this.subscribe({
-                    guid: obj.getGuid(),
-                    callback: lang.hitch(this, this.update)
-                });
+                this.subToContext(obj);
                 this.leftConstraint = this.leftConstraint.replace('[%CurrentObject%]', obj.getGuid());
                 this.topConstraint = this.topConstraint.replace('[%CurrentObject%]', obj.getGuid());
                 mendix.lang.sequence([
@@ -103,7 +101,23 @@ define( [
                     lang.hitch(this, this.actLoaded)
                 ]);
             }
-            callback();
+            cb && cb();
+        },
+
+        subToContext: function (obj) {
+            if (!this.contextsub || this.contextsub.guid != obj.getGuid()) {
+                this.contextsub = this.subscribe({
+                    guid: obj.getGuid(),
+                    callback: lang.hitch(this, function (guid) {
+                        mx.data.get({
+                            guid: guid,
+                            callback: lang.hitch(this, function (obj, count) {
+                                this.update(obj, null);
+                            })
+                        });
+                    })
+                });
+            }
         },
 
         _getObjects: function (page, callback) {
