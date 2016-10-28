@@ -90,6 +90,10 @@ define( [
 
         update: function (obj, callback) {
             if (obj) {
+                this.subscribe({
+                    guid: obj.getGuid(),
+                    callback: lang.hitch(this, this.update)
+                });
                 this.leftConstraint = this.leftConstraint.replace('[%CurrentObject%]', obj.getGuid());
                 this.topConstraint = this.topConstraint.replace('[%CurrentObject%]', obj.getGuid());
                 mendix.lang.sequence([
