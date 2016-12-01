@@ -23,7 +23,7 @@
   },
   "generatorVersion": "2.0.1",
   "paths": {
-    "testProjectFolder": "./test/",
+    "testProjectFolder": "./test_issue/",
     "testProjectFileName": "Test.mpr"
   },
   "scripts": {

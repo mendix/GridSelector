@@ -78,8 +78,6 @@ define( [
 
             this.usecontext = this.leftConstraint.indexOf("[%CurrentObject%]") > -1 || this.topConstraint.indexOf("[%CurrentObject%]") > -1;
 
-            console.log(this);
-
             if (!this.usecontext){
                 mendix.lang.sequence([
                     lang.hitch(this, this._getObjects, 0),
