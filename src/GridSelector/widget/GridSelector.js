@@ -38,6 +38,9 @@ define( [
         _hasStarted : null,
         _subscription: null,
 
+        _leftConstraint: "",
+        _topConstraint: "",
+
         // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
         _handle: null,
         _contextObj: null,
@@ -70,7 +73,13 @@ define( [
             this._selected = [];
             this._rowSelected = [];
 
+            this._leftConstraint = this.leftConstraint;
+            this._topConstraint = this.topConstraint;
+
             this.usecontext = this.leftConstraint.indexOf("[%CurrentObject%]") > -1 || this.topConstraint.indexOf("[%CurrentObject%]") > -1;
+
+            console.log(this);
+
             if (!this.usecontext){
                 mendix.lang.sequence([
                     lang.hitch(this, this._getObjects, 0),
@@ -85,8 +94,8 @@ define( [
             if (obj) {
                 this._contextObj = obj;
                 this._resetSubscriptions();
-                this.leftConstraint = this.leftConstraint.replace("[%CurrentObject%]", obj.getGuid());
-                this.topConstraint = this.topConstraint.replace("[%CurrentObject%]", obj.getGuid());
+                this.leftConstraint = this._leftConstraint.replace("[%CurrentObject%]", obj.getGuid());
+                this.topConstraint = this._topConstraint.replace("[%CurrentObject%]", obj.getGuid());
                 mendix.lang.sequence([
                     lang.hitch(this, this._getObjects, 0),
                     lang.hitch(this, this._getTopObjects),
@@ -299,7 +308,7 @@ define( [
                 for (j = 0; j < this.topObjs.length; j++) {
 
                     _topID = this.topObjs[j].getGuid();
-                    _checked = _leftAssoc !== "" && (_leftAssoc.hasOwnProperty(_topID) || _leftAssoc.guid === _topID || _topID === _leftAssoc);
+                    _checked = !!(_leftAssoc !== "" && (_leftAssoc.hasOwnProperty(_topID) || _leftAssoc.guid === _topID || _topID === _leftAssoc || (_leftAssoc.length && _leftAssoc.indexOf(_topID) !== -1)));
 
                     this._rows[i].cells[j] = {};
 
@@ -646,11 +655,10 @@ define( [
         },
 
         _resetSubscriptions: function () {
-            logger.debug(this.id + "._resetSubscriptions (disabled, not working)");
+            logger.debug(this.id + "._resetSubscriptions");
             if (!this._contextObj) {
                 return;
             }
-            return; // Disabled, not working
             if (this._subscription) {
                 this.unsubscribe(this._subscription);
                 this._subscription = null;
