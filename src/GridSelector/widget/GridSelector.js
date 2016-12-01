@@ -94,7 +94,7 @@ define( [
                     lang.hitch(this, this.actLoaded)
                 ]);
             }
-            callback();
+            this._executeCallback(callback, "update");
         },
 
         _getObjects: function (page, callback) {
@@ -123,7 +123,7 @@ define( [
                 callback: lang.hitch(this, function (objs, count) {
                     this._leftObjs = objs;
                     this._setMaxPages(count);
-                    callback();
+                    this._executeCallback(callback, "_getObjects>data.get");
                 }),
                 error: function (err) {
                     console.error("Error _getObjects //" + this.leftEntity + this.leftConstraint + " : ", err);
@@ -163,7 +163,7 @@ define( [
                             callback : lang.hitch(this, this._updateTopObjects)
                         });
                     }
-                    callback();
+                    this._executeCallback(callback, "_getTopObjects>data.get");
                 }),
                 error: function (err) {
                     console.error("Error getTopObjects //" + this._assoc[1] + this.topConstraint + " : ", err);
@@ -344,7 +344,7 @@ define( [
                     };
                 }
             }
-            callback();
+            this._executeCallback(callback, "_renderGrid");
         },
 
         eventPagingPreviousClicked: function (e) {
@@ -640,6 +640,13 @@ define( [
                 }
             }
             return -1;
+        },
+
+        _executeCallback: function (cb, from) {
+            logger.debug(this.id + "._executeCallback" + (from ? " from: " + from : ""));
+            if (cb && typeof cb === "function") {
+                cb();
+            }
         }
     });
 });
