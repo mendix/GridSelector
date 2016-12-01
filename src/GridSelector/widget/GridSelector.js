@@ -36,6 +36,7 @@ define( [
         _ignoreChange : null,
         _rows: null,
         _hasStarted : null,
+        _subscription: null,
 
         // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
         _handle: null,
@@ -70,14 +71,11 @@ define( [
             this._rowSelected = [];
 
             this.usecontext = this.leftConstraint.indexOf("[%CurrentObject%]") > -1 || this.topConstraint.indexOf("[%CurrentObject%]") > -1;
-            if (this.usecontext) {
-                this.actLoaded();
-            } else {
+            if (!this.usecontext){
                 mendix.lang.sequence([
                     lang.hitch(this, this._getObjects, 0),
                     lang.hitch(this, this._getTopObjects),
-                    lang.hitch(this, this._renderGrid),
-                    lang.hitch(this, this.actLoaded)
+                    lang.hitch(this, this._renderGrid)
                 ]);
             }
         },
@@ -85,16 +83,21 @@ define( [
         update: function (obj, callback) {
             logger.debug(this.id + ".update");
             if (obj) {
+                this._contextObj = obj;
+                this._resetSubscriptions();
                 this.leftConstraint = this.leftConstraint.replace("[%CurrentObject%]", obj.getGuid());
                 this.topConstraint = this.topConstraint.replace("[%CurrentObject%]", obj.getGuid());
                 mendix.lang.sequence([
                     lang.hitch(this, this._getObjects, 0),
                     lang.hitch(this, this._getTopObjects),
                     lang.hitch(this, this._renderGrid),
-                    lang.hitch(this, this.actLoaded)
+                    lang.hitch(this, function () {
+                        this._executeCallback(callback, "update");
+                    })
                 ]);
+            } else {
+                this._executeCallback(callback, "update");
             }
-            this._executeCallback(callback, "update");
         },
 
         _getObjects: function (page, callback) {
@@ -238,27 +241,27 @@ define( [
                 _tdWidth = Math.round(100 / (this.topObjs.length + 1));
             }
 
-            _headerRow = dom.tr();
+            _headerRow = dom.create("tr");
             this.gridHeadNode.appendChild(_headerRow);
 
             _headerRow.appendChild(
-                dom.th({
+                dom.create("th", {
                     "class": "mx-left-aligned",
                     "style": "width: " + (this.leftWidth > 0 ? this.leftWidth : _tdWidth) + "%"
-                }, dom.div({
+                }, dom.create("div", {
                     "class": "mx-datagrid-head-wrapper"
-                }, dom.div({
+                }, dom.create("div", {
                     "class": "mx-datagrid-head-caption"
                 }, " ")))
             );
 
             for (k = 0; k < this.topObjs.length; k++) {
-                _column = dom.th({
+                _column = dom.create("th", {
                     "style": "width: " + _tdWidth + "%",
                     "title": this.topObjs[k].get(this.topDisplayAttr)
-                }, dom.div({
+                }, dom.create("div", {
                     "class": "mx-datagrid-head-wrapper"
-                }, dom.div({
+                }, dom.create("div", {
                     "class": "mx-datagrid-head-caption"
                 }, this.topObjs[k].get(this.topDisplayAttr))));
                 _headerRow.appendChild(_column);
@@ -280,15 +283,15 @@ define( [
                     callback: lang.hitch(this, this._objRefreshed)
                 });
 
-                _nodetd = dom.td(
+                _nodetd = dom.create("td",
                     {
                         "class": "mx-left-aligned"
                     },
-                    dom.div(this._leftObjs[i].get(this.leftDisplayAttr))
+                    dom.create("div", this._leftObjs[i].get(this.leftDisplayAttr))
                 );
 
                 this._rows[i].header = _nodetd;
-                this._rows[i].node = dom.tr({}, _nodetd);
+                this._rows[i].node = dom.create("tr", {}, _nodetd);
 
                 this.gridBodyNode.appendChild(this._rows[i].node);
                 this._rows[i].cells = [];
@@ -300,7 +303,7 @@ define( [
 
                     this._rows[i].cells[j] = {};
 
-                    _cellnode = dom.td({
+                    _cellnode = dom.create("td", {
                         "class": "mx-center-aligned",
                         "tabIndex": (i * this.topObjs.length) + j
                     });
@@ -309,14 +312,14 @@ define( [
 
                     if (this.inputType === "checkbox") {
                         // Create checkbox.
-                        _checkbox = dom.input({
+                        _checkbox = dom.create("input", {
                             "type": "checkbox",
                             "name": this._leftObjs[i].getGuid()
                         });
                         domAttr.set(_checkbox, "defaultChecked", _checked);
                         _checkbox.checked = _checked;
                     } else {
-                        _checkbox = dom.input({
+                        _checkbox = dom.create("input", {
                             "type": "radio",
                             "name": this._leftObjs[i].getGuid()
                         });
@@ -330,7 +333,7 @@ define( [
                         domAttr.set(_checkbox, "disabled", true);
                     }
 
-                    _cellnode.appendChild(dom.div({
+                    _cellnode.appendChild(dom.create("div", {
                         "class": "mx-datagrid-data-wrapper"
                     }, _checkbox));
 
@@ -640,6 +643,29 @@ define( [
                 }
             }
             return -1;
+        },
+
+        _resetSubscriptions: function () {
+            logger.debug(this.id + "._resetSubscriptions (disabled, not working)");
+            if (!this._contextObj) {
+                return;
+            }
+            return; // Disabled, not working
+            if (this._subscription) {
+                this.unsubscribe(this._subscription);
+                this._subscription = null;
+            }
+            this._subscription = this.subscribe({
+                guid: this._contextObj.getGuid(),
+                callback: lang.hitch(this, function (guid) {
+                    mx.data.get({
+                        guid: guid,
+                        callback: lang.hitch(this, function (obj, count) {
+                            this.update(obj, null);
+                        })
+                    });
+                })
+            });
         },
 
         _executeCallback: function (cb, from) {
