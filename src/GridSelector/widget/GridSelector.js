@@ -1,36 +1,31 @@
-/*jslint white:true, nomen: true, plusplus: true */
-/*global mx, define, require, browser, devel, console, mendix, lang, mxui, event */
-/*mendix */
-/*
-    GridSelector
-    ========================
-
-    @file      : GridSelector.js
-    @version   : 2.0
-    @author    : Gerhard Richard Edens
-    @date      : Mon, 20 Apr 2015 09:49:50 GMT
-    @copyright : Mendix B.v.
-    @license   : Apache 2
-
-    Documentation
-    ========================
-    Describe your widget here.
-*/
-
-// Required module list. Remove unnecessary modules, you can always get them back from the boilerplate.
 define( [
-    'dojo/_base/declare', 'mxui/widget/_WidgetBase', 'dijit/_TemplatedMixin',
-    'mxui/dom', 'dojo/dom', 'dojo/query', 'dojo/dom-prop', 'dojo/dom-geometry', 'dojo/dom-class', 'dojo/dom-style', 'dojo/dom-construct', 'dojo/dom-attr', 'dojo/_base/array', 'dojo/_base/lang', 'dojo/text', 'dojo/html', 'dojo/_base/event'
-], function (declare, _WidgetBase, _TemplatedMixin,
-              dom, dojoDom, domQuery, domProp, domGeom, domClass, domStyle, domConstruct, domAttr, dojoArray, lang, text, html, dojoEvent) {
-    'use strict';
+    "dojo/_base/declare",
+    "mxui/widget/_WidgetBase",
+    "dijit/_TemplatedMixin",
 
-    // Declare widget's prototype.
-    return declare('GridSelector.widget.GridSelector', [ _WidgetBase, _TemplatedMixin ], {
+    "mxui/dom",
+    "dojo/dom",
+    "dojo/query",
+    "dojo/dom-prop",
+    "dojo/dom-geometry",
+    "dojo/dom-class",
+    "dojo/dom-style",
+    "dojo/dom-construct",
+    "dojo/dom-attr",
+    "dojo/_base/array",
+    "dojo/_base/lang",
+    "dojo/text",
+    "dojo/html",
+    "dojo/_base/event"
+], function (declare, _WidgetBase, _TemplatedMixin, dom, dojoDom, domQuery, domProp, domGeom, domClass, domStyle, domConstruct, domAttr, dojoArray, lang, text, html, dojoEvent) {
+    "use strict";
+
+    // Declare widget"s prototype.
+    return declare("GridSelector.widget.GridSelector", [ _WidgetBase, _TemplatedMixin ], {
 
         // Variables
-        baseClass: 'gridSelector mx-grid',
-        subClass: 'mx-datagrid',
+        baseClass: "gridSelector mx-grid",
+        subClass: "mx-datagrid",
 
         // Global Cache
         _assoc: null,
@@ -47,7 +42,6 @@ define( [
         _contextObj: null,
         _objProperty: null,
 
-        // dojo.declare.constructor is called to construct the widget instance. Implement to initialize non-primitive properties.
         constructor: function () {
             this._objProperty = {};
             this._assoc = null;
@@ -60,22 +54,22 @@ define( [
             this._hasStarted = false;
         },
 
-        // mxui.widget._WidgetBase.uninitialize is called when the widget is destroyed. Implement to do special tear-down work.
         uninitialize: function () {
             // Clean up listeners, helper objects, etc. There is no need to remove listeners added with this.connect / this.subscribe / this.own.
         },
 
         startup: function () {
+            logger.debug(this.id + ".startup");
             if (this._hasStarted) {
                 return;
             }
             this._hasStarted = true;
-            this._assoc = this.topEntity.split('/');
+            this._assoc = this.topEntity.split("/");
             this.inputType = this._checkRefType();
             this._selected = [];
             this._rowSelected = [];
 
-            this.usecontext = this.leftConstraint.indexOf('[%CurrentObject%]') > -1 || this.topConstraint.indexOf('[%CurrentObject%]') > -1;
+            this.usecontext = this.leftConstraint.indexOf("[%CurrentObject%]") > -1 || this.topConstraint.indexOf("[%CurrentObject%]") > -1;
             if (this.usecontext) {
                 this.actLoaded();
             } else {
@@ -89,9 +83,10 @@ define( [
         },
 
         update: function (obj, callback) {
+            logger.debug(this.id + ".update");
             if (obj) {
-                this.leftConstraint = this.leftConstraint.replace('[%CurrentObject%]', obj.getGuid());
-                this.topConstraint = this.topConstraint.replace('[%CurrentObject%]', obj.getGuid());
+                this.leftConstraint = this.leftConstraint.replace("[%CurrentObject%]", obj.getGuid());
+                this.topConstraint = this.topConstraint.replace("[%CurrentObject%]", obj.getGuid());
                 mendix.lang.sequence([
                     lang.hitch(this, this._getObjects, 0),
                     lang.hitch(this, this._getTopObjects),
@@ -103,6 +98,7 @@ define( [
         },
 
         _getObjects: function (page, callback) {
+            logger.debug(this.id + "._getObjects");
             var schema = {
                 attributes: [this.leftDisplayAttr],
                 sort: [
@@ -121,7 +117,7 @@ define( [
             };
 
             mx.data.get({
-                xpath: '//' + this.leftEntity + this.leftConstraint,
+                xpath: "//" + this.leftEntity + this.leftConstraint,
                 count: true,
                 filter: schema,
                 callback: lang.hitch(this, function (objs, count) {
@@ -130,14 +126,15 @@ define( [
                     callback();
                 }),
                 error: function (err) {
-                    console.error('Error _getObjects //' + this.leftEntity + this.leftConstraint + ' : ', err);
+                    console.error("Error _getObjects //" + this.leftEntity + this.leftConstraint + " : ", err);
                 },
                 nocache: false
             });
         },
 
         _setMaxPages: function (count) {
-            if (typeof count === 'number') {
+            logger.debug(this.id + "._setMaxPages");
+            if (typeof count === "number") {
                 this._maxPages = this.pageLimit > 0 ? Math.ceil(count / this.pageLimit) - 1 : 1;
             } else {
                 this._maxPages = this.pageLimit > 0 ? Math.ceil(count.count / this.pageLimit) - 1 : 1;
@@ -145,6 +142,7 @@ define( [
         },
 
         _getTopObjects: function (callback) {
+            logger.debug(this.id + "._getTopObjects");
             var schema = {};
 
             schema.attributes = [this.topDisplayAttr];
@@ -154,7 +152,7 @@ define( [
             ];
 
             mx.data.get({
-                xpath: '//' + this._assoc[1] + this.topConstraint,
+                xpath: "//" + this._assoc[1] + this.topConstraint,
                 filter: schema,
                 callback: lang.hitch(this, function (objs) {
                     var i = null;
@@ -168,13 +166,14 @@ define( [
                     callback();
                 }),
                 error: function (err) {
-                    console.error('Error getTopObjects //' + this._assoc[1] + this.topConstraint + ' : ', err);
+                    console.error("Error getTopObjects //" + this._assoc[1] + this.topConstraint + " : ", err);
                 },
                 nocache: false
             });
         },
 
         _updateTopObjects: function(obj){
+            logger.debug(this.id + "._updateTopObjects");
             mx.data.get({
                 guid     : obj,
                 callback : lang.hitch(this, function(obj) {
@@ -187,12 +186,13 @@ define( [
                     this._renderGrid();
                 }),
                 error: function (err) {
-                    console.error('Error updateTopObjects ' + obj + ' : ', err);
+                    console.error("Error updateTopObjects " + obj + " : ", err);
                 }
             });
         },
 
         _renderGrid: function (callback) {
+            logger.debug(this.id + "._renderGrid");
             this._selected = [];
             this._rows = [];
 
@@ -212,24 +212,24 @@ define( [
             domConstruct.empty(this.gridHeadNode);
             domConstruct.empty(this.gridBodyNode);
 
-            html.set(this.pagingStatusNode, (this._currPage + 1) + ' out of ' + (this._maxPages + 1));
+            html.set(this.pagingStatusNode, (this._currPage + 1) + " out of " + (this._maxPages + 1));
 
             if (this._currPage === 0) {
-                domAttr.set(this.pagingPrevious, 'disabled', 'disabled');
+                domAttr.set(this.pagingPrevious, "disabled", "disabled");
             } else {
-                domAttr.remove(this.pagingPrevious, 'disabled');
+                domAttr.remove(this.pagingPrevious, "disabled");
             }
 
             if (this._currPage === this._maxPages) {
-                domAttr.set(this.pagingNext, 'disabled', 'disabled');
+                domAttr.set(this.pagingNext, "disabled", "disabled");
             } else {
-                domAttr.remove(this.pagingNext, 'disabled');
+                domAttr.remove(this.pagingNext, "disabled");
             }
 
             if (this._maxPages <= 0 ) {
-                domStyle.set(this.controlNode, 'display', 'none');
+                domStyle.set(this.controlNode, "display", "none");
             } else {
-                domStyle.set(this.controlNode, 'display', 'block');
+                domStyle.set(this.controlNode, "display", "block");
             }
 
             if (this.leftWidth > 0) {
@@ -238,28 +238,28 @@ define( [
                 _tdWidth = Math.round(100 / (this.topObjs.length + 1));
             }
 
-            _headerRow = mxui.dom.tr();
+            _headerRow = dom.tr();
             this.gridHeadNode.appendChild(_headerRow);
 
             _headerRow.appendChild(
-                mxui.dom.th({
-                    'class': 'mx-left-aligned',
-                    'style': 'width: ' + (this.leftWidth > 0 ? this.leftWidth : _tdWidth) + '%'
-                }, mxui.dom.div({
-                    'class': 'mx-datagrid-head-wrapper'
-                }, mxui.dom.div({
-                    'class': 'mx-datagrid-head-caption'
-                }, ' ')))
+                dom.th({
+                    "class": "mx-left-aligned",
+                    "style": "width: " + (this.leftWidth > 0 ? this.leftWidth : _tdWidth) + "%"
+                }, dom.div({
+                    "class": "mx-datagrid-head-wrapper"
+                }, dom.div({
+                    "class": "mx-datagrid-head-caption"
+                }, " ")))
             );
 
             for (k = 0; k < this.topObjs.length; k++) {
-                _column = mxui.dom.th({
-                    'style': 'width: ' + _tdWidth + '%',
-                    'title': this.topObjs[k].get(this.topDisplayAttr)
-                }, mxui.dom.div({
-                    'class': 'mx-datagrid-head-wrapper'
-                }, mxui.dom.div({
-                    'class': 'mx-datagrid-head-caption'
+                _column = dom.th({
+                    "style": "width: " + _tdWidth + "%",
+                    "title": this.topObjs[k].get(this.topDisplayAttr)
+                }, dom.div({
+                    "class": "mx-datagrid-head-wrapper"
+                }, dom.div({
+                    "class": "mx-datagrid-head-caption"
                 }, this.topObjs[k].get(this.topDisplayAttr))));
                 _headerRow.appendChild(_column);
             }
@@ -280,15 +280,15 @@ define( [
                     callback: lang.hitch(this, this._objRefreshed)
                 });
 
-                _nodetd = mxui.dom.td(
+                _nodetd = dom.td(
                     {
-                        'class': 'mx-left-aligned'
+                        "class": "mx-left-aligned"
                     },
-                    mxui.dom.div(this._leftObjs[i].get(this.leftDisplayAttr))
+                    dom.div(this._leftObjs[i].get(this.leftDisplayAttr))
                 );
 
                 this._rows[i].header = _nodetd;
-                this._rows[i].node = mxui.dom.tr({}, _nodetd);
+                this._rows[i].node = dom.tr({}, _nodetd);
 
                 this.gridBodyNode.appendChild(this._rows[i].node);
                 this._rows[i].cells = [];
@@ -296,51 +296,51 @@ define( [
                 for (j = 0; j < this.topObjs.length; j++) {
 
                     _topID = this.topObjs[j].getGuid();
-                    _checked = _leftAssoc !== '' && (_leftAssoc.hasOwnProperty(_topID) || _leftAssoc.guid === _topID || _topID === _leftAssoc);
+                    _checked = _leftAssoc !== "" && (_leftAssoc.hasOwnProperty(_topID) || _leftAssoc.guid === _topID || _topID === _leftAssoc);
 
                     this._rows[i].cells[j] = {};
 
-                    _cellnode = mxui.dom.td({
-                        'class': 'mx-center-aligned',
-                        'tabIndex': (i * this.topObjs.length) + j
+                    _cellnode = dom.td({
+                        "class": "mx-center-aligned",
+                        "tabIndex": (i * this.topObjs.length) + j
                     });
 
                     this._rows[i].node.appendChild(_cellnode);
 
-                    if (this.inputType === 'checkbox') {
+                    if (this.inputType === "checkbox") {
                         // Create checkbox.
-                        _checkbox = mxui.dom.input({
-                            'type': 'checkbox',
-                            'name': this._leftObjs[i].getGuid()
+                        _checkbox = dom.input({
+                            "type": "checkbox",
+                            "name": this._leftObjs[i].getGuid()
                         });
-                        domAttr.set(_checkbox, 'defaultChecked', _checked);
+                        domAttr.set(_checkbox, "defaultChecked", _checked);
                         _checkbox.checked = _checked;
                     } else {
-                        _checkbox = mxui.dom.input({
-                            'type': 'radio',
-                            'name': this._leftObjs[i].getGuid()
+                        _checkbox = dom.input({
+                            "type": "radio",
+                            "name": this._leftObjs[i].getGuid()
                         });
-                        domAttr.set(_checkbox, 'defaultChecked', _checked);
+                        domAttr.set(_checkbox, "defaultChecked", _checked);
                         _checkbox.checked = _checked;
                     }
-                    this.connect(_checkbox, 'onchange', lang.hitch(this, this._boxChanged, i, j));
-                    this.connect(_cellnode, 'onkeypress', lang.hitch(this, this._boxKeyPress, i, j));
+                    this.connect(_checkbox, "onchange", lang.hitch(this, this._boxChanged, i, j));
+                    this.connect(_cellnode, "onkeypress", lang.hitch(this, this._boxKeyPress, i, j));
 
                     if (this.readonly === true) {
-                        domAttr.set(_checkbox, 'disabled', true);
+                        domAttr.set(_checkbox, "disabled", true);
                     }
 
-                    _cellnode.appendChild(mxui.dom.div({
-                        'class': 'mx-datagrid-data-wrapper'
+                    _cellnode.appendChild(dom.div({
+                        "class": "mx-datagrid-data-wrapper"
                     }, _checkbox));
 
                     this._rows[i].cells[j] = {
-                        'box': _checkbox,
-                        'left': this._leftObjs[i],
-                        'top': this.topObjs[j],
-                        'node': _cellnode,
-                        'row': i,
-                        'col': j
+                        "box": _checkbox,
+                        "left": this._leftObjs[i],
+                        "top": this.topObjs[j],
+                        "node": _cellnode,
+                        "row": i,
+                        "col": j
                     };
                 }
             }
@@ -356,6 +356,7 @@ define( [
         },
 
         _loadPage: function (page, e) {
+            logger.debug(this.id + "._loadPage");
             this._currPage += page;
             if (this._currPage < 0) {
                 this._currPage = 0;
@@ -368,6 +369,7 @@ define( [
         },
 
         selectCell: function (i, j) {
+            logger.debug(this.id + ".selectCell");
             var _cell = null,
                 _selectIdx = null;
             _cell = this._rows[i].cells[j];
@@ -376,16 +378,18 @@ define( [
         },
 
         _setSelectedCell: function (_cell, _selected) {
+            logger.debug(this.id + "._setSelectedCell");
             if (_selected) {
-                domClass.add(_cell.node, 'cellSelected');
+                domClass.add(_cell.node, "cellSelected");
                 this._selected.push(_cell);
             } else {
-                domClass.remove(_cell.node, 'cellSelected');
+                domClass.remove(_cell.node, "cellSelected");
                 this._selected.splice(this._arrIndexOf(this._selected, _cell), 1);
             }
         },
 
         _boxKeyPress: function (_row, _col, _evt) {
+            logger.debug(this.id + "._boxKeyPress");
             var _selectNode = null,
                 _checkbox = null,
                 _rowExists = null,
@@ -435,12 +439,14 @@ define( [
         },
 
         _boxClicked: function (i, j, _evt) {
+            logger.debug(this.id + "._boxClicked");
             this._rows[i].cells[j].node.focus();
             // This is so checking the box doesnt get interpreted as clicking the container node as well
             dojoEvent.stop(_evt);
         },
 
         _boxChanged: function (i, j, _evt) {
+            logger.debug(this.id + "._boxChanged");
             var _cell = null,
                 _filterrefs = null;
 
@@ -450,7 +456,7 @@ define( [
                 _cell = this._rows[i].cells[j];
                 this._getLeftRefs(_cell.left.getGuid(), lang.hitch(this, function (_refs) {
                     if (_cell.box.checked) {
-                        if (this.inputType === 'checkbox') {
+                        if (this.inputType === "checkbox") {
                             _refs.push(_cell.top.getGuid());
 
                             _cell.left.set(this._assoc[0], _refs);
@@ -458,14 +464,14 @@ define( [
                             _cell.left.set(this._assoc[0], _cell.top.getGuid());
                         }
                     } else {
-                        if (this.inputType === 'checkbox') {
+                        if (this.inputType === "checkbox") {
                             _filterrefs = dojoArray.filter(_refs, function (item) {
                                 return item !== _cell.top.getGuid();
                             });
 
                             _cell.left.set(this._assoc[0], _filterrefs);
                         } else {
-                            _cell.left.set(this._assoc[0], '');
+                            _cell.left.set(this._assoc[0], "");
                         }
                     }
                     this._executeClick(_cell.left);
@@ -476,6 +482,7 @@ define( [
         },
 
         _changeReceived: function (_guid, _attr, _value) {
+            logger.debug(this.id + "._changeReceived");
             var _idx = null,
                 _left = null,
                 _cells = null,
@@ -514,6 +521,7 @@ define( [
         },
 
         _objRefreshed: function (_guid) {
+            logger.debug(this.id + "._objRefreshed");
             var _idx = this._objIndexOf(this._leftObjs, _guid),
                 _left = this._leftObjs[_idx],
                 _cells = this._rows[_idx].cells,
@@ -546,7 +554,7 @@ define( [
                 }
 
                 html.set(_header, _obj.get(this.leftDisplayAttr));
-            };
+            }
 
             if (!this._ignoreChange) {
                 this._getLeftRefs(_left, lang.hitch(this, _setBoxes));
@@ -554,6 +562,7 @@ define( [
         },
 
         _getLeftRefs: function (_leftid, callback) {
+            logger.debug(this.id + "._getLeftRefs");
             var _filter = {
                 attributes: [this.leftDisplayAttr],
                 sort: [
@@ -576,38 +585,40 @@ define( [
                 filter: _filter,
                 callback: lang.hitch(this, function (obj) {
                     var refs = obj.get(this._assoc[0]);
-                    refs = (refs === '') ? [] : refs;
+                    refs = (refs === "") ? [] : refs;
                     callback(refs, obj);
                 }),
                 error: function (err) {
-                    console.error('Error in getLeftRefs ' + _leftid + ' : ' + err);
+                    console.error("Error in getLeftRefs " + _leftid + " : " + err);
                 }
             });
         },
 
         _checkRefType: function () {
-            return 'checkbox';
+            return "checkbox";
         },
 
         _executeClick: function (_mxobj) {
-            if (this.onchangemf !== '' && _mxobj) {
+            logger.debug(this.id + "._executeClick");
+            if (this.onchangemf !== "" && _mxobj) {
                 mx.data.action({
                     params: {
                         actionname: this.onchangemf,
-                        applyto: 'selection',
+                        applyto: "selection",
                         guids : [_mxobj.getGuid()]
                     },
                     callback: function () {
                         // ok
                     },
                     error: function (err) {
-                        console.error('exec click returned error for guid ' + _mxobj.getGuid() + ' MF:' + this.onchangemf + ' : ', err);
+                        console.error("exec click returned error for guid " + _mxobj.getGuid() + " MF:" + this.onchangemf + " : ", err);
                     }
                 });
             }
         },
 
         _objIndexOf: function (_self, _guidStr) {
+            logger.debug(this.id + "._objIndexOf");
             var i = null;
             for (i = 0; i < _self.length; i++) {
                 if (_self[i].getGuid() === _guidStr) {
@@ -618,6 +629,7 @@ define( [
         },
 
         _arrIndexOf: function (_self, _obj) {
+            logger.debug(this.id + "._arrIndexOf");
             var i = null;
             if (!(_self instanceof Array) || _self.length === 0) {
                 return -1;
