@@ -19,4 +19,4 @@ node_modules/
 .vscode/
 *.bak
 
-test_issue/
+test_issue
