@@ -168,7 +168,7 @@ define( [
                     var i = null;
                     this.topObjs = objs;
                     for(i = 0; i< objs.length; i++){
-                        mx.data.subscribe({
+                        this.subscribe({
                             guid     : objs[i].getGuid(),
                             callback : lang.hitch(this, this._updateTopObjects)
                         });
@@ -611,7 +611,7 @@ define( [
         _executeClick: function (_mxobj) {
             logger.debug(this.id + "._executeClick");
             if (this.onchangemf !== "" && _mxobj) {
-                mx.data.action({
+                var microflowAction = {
                     params: {
                         actionname: this.onchangemf,
                         applyto: "selection",
@@ -623,7 +623,13 @@ define( [
                     error: function (err) {
                         console.error("exec click returned error for guid " + _mxobj.getGuid() + " MF:" + this.onchangemf + " : ", err);
                     }
-                });
+                };
+                if (!mx.version || parseInt(mx.version.split("."), 10) < 6) {
+                    microflowAction.store = { caller: this.mxform };
+                } else {
+                    microflowAction.origin = this.mxform;
+                }
+                mx.data.action(microflowAction);
             }
         },
 
