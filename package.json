@@ -1,12 +1,11 @@
 {
   "name": "GridSelector",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "This widget creates a grid, consisting of a list of objects to the left and one at the top.",
   "license": "",
   "author": "",
   "private": true,
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "del": "^2.2.2",
     "gulp": "^3.9.1",

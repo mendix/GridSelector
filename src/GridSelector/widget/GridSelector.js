@@ -196,7 +196,7 @@ define( [
                     this._renderGrid();
                 }),
                 error: function (err) {
-                    console.error("Error updateTopObjects " + obj + " : ", err);
+                    console.error("Error updateTopObjects " + (obj ? obj.getGuid() : null) + " : ", err);
                 }
             });
         },
